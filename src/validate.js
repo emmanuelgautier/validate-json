@@ -1,3 +1,4 @@
+const core = require('@actions/core')
 const Ajv = require('ajv')
 const { readFileSync } = require('fs')
 
@@ -20,6 +21,7 @@ async function validateFiles(files, schema, strict) {
     }
 
     const valid = validate(data)
+    core.debug(`Validation result for ${file}: ${valid}`)
 
     if (!valid) {
       throw new Error(

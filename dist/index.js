@@ -31872,6 +31872,7 @@ module.exports = { readSchema }
 /***/ 7579:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
+const core = __nccwpck_require__(7484)
 const Ajv = __nccwpck_require__(2463)
 const { readFileSync } = __nccwpck_require__(9896)
 
@@ -31894,6 +31895,7 @@ async function validateFiles(files, schema, strict) {
     }
 
     const valid = validate(data)
+    core.debug(`Validation result for ${file}: ${valid}`)
 
     if (!valid) {
       throw new Error(
