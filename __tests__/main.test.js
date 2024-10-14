@@ -23,9 +23,9 @@ describe('action', () => {
     getInputMock.mockImplementation(name => {
       switch (name) {
         case 'files':
-          return '__tests__/stubs/valid.json'
+          return '__tests__/fixtures/valid.json'
         case 'schema':
-          return '__tests__/stubs/schema.json'
+          return '__tests__/fixtures/schema.json'
         default:
           return ''
       }
@@ -44,9 +44,9 @@ describe('action', () => {
     getInputMock.mockImplementation(name => {
       switch (name) {
         case 'files':
-          return '__tests__/stubs/invalid.json'
+          return '__tests__/fixtures/invalid.json'
         case 'schema':
-          return '__tests__/stubs/schema.json'
+          return '__tests__/fixtures/schema.json'
         default:
           return ''
       }
@@ -59,7 +59,7 @@ describe('action', () => {
     expect(debugMock).toHaveBeenNthCalledWith(1, 'strict: false')
     expect(setFailedMock).toHaveBeenNthCalledWith(
       1,
-      `Validation failed for __tests__/stubs/invalid.json: data must have required property 'productName'`
+      `Validation failed for __tests__/fixtures/invalid.json: data must have required property 'productName'`
     )
   })
 

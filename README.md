@@ -31,8 +31,8 @@ jobs:
       - name: Validate JSON
         uses: emmanuelgautier/validate-json@v1
         with:
+          files: dir/*.json
           schema: schema.json
-          files: file.json
 ```
 
 ## Inputs
