@@ -2,8 +2,10 @@ name: 'Validate JSON'
 description:
   'Validate JSON file(s) with JSON Schema and enforce best practices.'
 author: 'Emmanuel Gautier'
+branding:
+  icon: 'check'
+  color: 'green'
 
-# Define your inputs here.
 inputs:
   files:
     description: 'The JSON file(s) to validate.'
@@ -16,7 +18,6 @@ inputs:
     required: false
     default: 'false'
 
-# Define your outputs here.
 outputs:
   valid:
     description: 'Whether the JSON file(s) are valid.'
