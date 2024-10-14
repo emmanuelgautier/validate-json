@@ -56,4 +56,5 @@ This action uses [ajv](https://ajv.js.org/) to validate JSON files.
 ## License
 
 The action in this repository is licensed under the
-[MIT License](https://github.com/emmanuelgautier/validate-json/blob/main/LICENSE)@[Emmanuel Gautier](https://www.emmanuelgautier.com/).
+[MIT License](https://github.com/emmanuelgautier/validate-json/blob/main/LICENSE)@
+[Emmanuel Gautier](https://www.emmanuelgautier.com/).
