@@ -1,4 +1,4 @@
-name: 'Validate JSON'
+name: 'Validate JSON Files Action'
 description:
   'Validate JSON file(s) with JSON Schema and enforce best practices.'
 author: 'Emmanuel Gautier'
