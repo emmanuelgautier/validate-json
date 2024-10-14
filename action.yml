@@ -1,18 +1,27 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Validate JSON'
+description:
+  'Validate JSON file(s) with JSON Schema and enforce best practices.'
+author: 'Emmanuel Gautier'
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  files:
+    description: 'The JSON file(s) to validate.'
     required: true
-    default: '1000'
+  schema:
+    description: 'The JSON Schema to validate against.'
+    required: false
+  strict:
+    description: 'Enforce strict validation.'
+    required: false
+    default: 'false'
 
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  valid:
+    description: 'Whether the JSON file(s) are valid.'
+  # errors:
+  #   description: 'The validation errors.'
 
 runs:
   using: node20
