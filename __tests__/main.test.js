@@ -59,9 +59,9 @@ describe('action', () => {
     // Verify that all of the core library functions were called correctly
     expect(debugMock).toHaveBeenNthCalledWith(1, 'strict: false')
     expect(setOutputMock).toHaveBeenNthCalledWith(1, 'valid', 'false')
-    expect(errorMock).toHaveBeenNthCalledWith(1, `Validation failed!`)
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'Validation failed!')
     expect(errorMock).toHaveBeenNthCalledWith(
-      2,
+      1,
       `__tests__/fixtures/invalid.json: data must have required property 'productName'`
     )
   })

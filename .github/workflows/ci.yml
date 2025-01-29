@@ -75,10 +75,18 @@ jobs:
 
       - name: Test Local Action
         id: test-action
+        continue-on-error: true
         uses: ./
         with:
           files: '__tests__/fixtures/invalid.json'
           schema: '__tests__/fixtures/schema.json'
+
+      - name: Check for failure
+        id: check-failure
+        if: failure()
+        run: |
+          echo "Action failed as expected"
+          exit 0
 
       - name: Print Output
         id: output

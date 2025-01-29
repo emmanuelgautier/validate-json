@@ -31799,8 +31799,8 @@ async function run() {
     if (errors.length > 0) {
       core.setOutput('valid', 'false')
       core.setOutput('errors', errors)
+      core.setFailed('Validation failed!')
 
-      core.error('Validation failed!')
       for (const error of errors) {
         core.error(error)
       }
