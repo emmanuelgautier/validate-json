@@ -45,9 +45,10 @@ jobs:
 
 ## Outputs
 
-| Output  | Description                         |
-| ------- | ----------------------------------- |
-| `valid` | Whether the JSON file(s) are valid. |
+| Output   | Description                          |
+| -------- | ------------------------------------ |
+| `valid`  | Whether the JSON file(s) are valid.  |
+| `errors` | The validation errors for each file. |
 
 ## About
 

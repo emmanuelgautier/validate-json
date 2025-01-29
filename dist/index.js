@@ -31795,7 +31795,17 @@ async function run() {
     core.debug(`files: ${files}`)
 
     const schema = schemaInput ? await readSchema(schemaInput) : null
-    await validateFiles(files, schema, strictInput)
+    const errors = await validateFiles(files, schema, strictInput)
+    if (errors.length > 0) {
+      core.setOutput('valid', 'false')
+      core.setOutput('errors', errors)
+      core.setFailed('Validation failed!')
+
+      for (const error of errors) {
+        core.error(error)
+      }
+      return
+    }
 
     core.info('Validation successful!')
     core.setOutput('valid', 'true')
@@ -31888,21 +31898,24 @@ async function validateFiles(files, schema, strict) {
   const ajv = new Ajv({ strict, loadSchema })
   const validate = await ajv.compileAsync(schema || true)
 
+  let filesErrors = []
   for (const file of files) {
     const data = JSON.parse(readFileSync(file, 'utf-8'))
     if (!data) {
       throw new Error(`Failed to read file: ${file}`)
     }
 
-    const valid = validate(data)
-    core.debug(`Validation result for ${file}: ${valid}`)
+    const isValid = validate(data)
+    core.debug(`Validation result for ${file}: ${isValid}`)
 
-    if (!valid) {
-      throw new Error(
-        `Validation failed for ${file}: ${ajv.errorsText(validate.errors)}`
+    if (!isValid) {
+      filesErrors = filesErrors.concat(
+        `${file}: ${ajv.errorsText(validate.errors)}`
       )
     }
   }
+
+  return filesErrors
 }
 
 async function loadSchema(uri) {

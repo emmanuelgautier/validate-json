@@ -8,6 +8,7 @@ const main = require('../src/main')
 const debugMock = jest.spyOn(core, 'debug').mockImplementation()
 const getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
 const setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
+const errorMock = jest.spyOn(core, 'error').mockImplementation()
 const setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
 
 // Mock the action's main function
@@ -39,7 +40,7 @@ describe('action', () => {
     expect(setOutputMock).toHaveBeenNthCalledWith(1, 'valid', 'true')
   })
 
-  it('sets a failed status', async () => {
+  it('sets errors when json is invalid', async () => {
     // Set the action's inputs as return values from core.getInput()
     getInputMock.mockImplementation(name => {
       switch (name) {
@@ -57,9 +58,11 @@ describe('action', () => {
 
     // Verify that all of the core library functions were called correctly
     expect(debugMock).toHaveBeenNthCalledWith(1, 'strict: false')
-    expect(setFailedMock).toHaveBeenNthCalledWith(
+    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'valid', 'false')
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'Validation failed!')
+    expect(errorMock).toHaveBeenNthCalledWith(
       1,
-      `Validation failed for __tests__/fixtures/invalid.json: data must have required property 'productName'`
+      `__tests__/fixtures/invalid.json: data must have required property 'productName'`
     )
   })
 
