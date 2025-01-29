@@ -63,3 +63,27 @@ jobs:
       - name: Print Output
         id: output
         run: echo "${{ steps.test-action.outputs.valid }}"
+
+  test-errors-action:
+    name: GitHub Actions Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Local Action
+        id: test-action
+        uses: ./
+        with:
+          files: '__tests__/fixtures/invalid.json'
+          schema: '__tests__/fixtures/schema.json'
+
+      - name: Print Output
+        id: output
+        run: echo "${{ steps.test-action.outputs.valid }}"
+
+      - name: Print Errors
+        id: errors
+        run: echo "${{ steps.test-action.outputs.errors }}"
