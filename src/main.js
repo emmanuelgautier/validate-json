@@ -19,7 +19,17 @@ async function run() {
     core.debug(`files: ${files}`)
 
     const schema = schemaInput ? await readSchema(schemaInput) : null
-    await validateFiles(files, schema, strictInput)
+    const errors = await validateFiles(files, schema, strictInput)
+    if (errors.length > 0) {
+      core.setOutput('valid', 'false')
+      core.setOutput('errors', errors)
+
+      core.error('Validation failed!')
+      for (const error of errors) {
+        core.error(error)
+      }
+      return
+    }
 
     core.info('Validation successful!')
     core.setOutput('valid', 'true')

@@ -21,8 +21,8 @@ inputs:
 outputs:
   valid:
     description: 'Whether the JSON file(s) are valid.'
-  # errors:
-  #   description: 'The validation errors.'
+  errors:
+    description: 'The validation errors.'
 
 runs:
   using: node20
