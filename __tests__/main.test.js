@@ -1,8 +1,8 @@
 /**
  * Unit tests for the action's main functionality, src/main.js
  */
-const core = require('@actions/core')
-const main = require('../src/main')
+import * as core from '@actions/core'
+import main from '../src/main'
 
 // Mock the GitHub Actions core library
 const debugMock = jest.spyOn(core, 'debug').mockImplementation()
@@ -21,12 +21,12 @@ describe('action', () => {
 
   it('sets the valid output', async () => {
     // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation(name => {
+    getInputMock.mockImplementation((name) => {
       switch (name) {
         case 'files':
-          return '__tests__/fixtures/valid.json'
+          return '__fixtures__/valid.json'
         case 'schema':
-          return '__tests__/fixtures/schema.json'
+          return '__fixtures__/schema.json'
         default:
           return ''
       }
@@ -42,7 +42,7 @@ describe('action', () => {
 
   it('sets errors when json is invalid', async () => {
     // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation(name => {
+    getInputMock.mockImplementation((name) => {
       switch (name) {
         case 'files':
           return '__tests__/fixtures/invalid.json'
@@ -68,7 +68,7 @@ describe('action', () => {
 
   it('fails if no input is provided', async () => {
     // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation(name => {
+    getInputMock.mockImplementation((name) => {
       switch (name) {
         case 'files':
           throw new Error('Input required and not supplied: files')

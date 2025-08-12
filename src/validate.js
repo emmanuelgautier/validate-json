@@ -1,6 +1,6 @@
-const core = require('@actions/core')
-const Ajv = require('ajv')
-const { readFileSync } = require('fs')
+import * as core from '@actions/core'
+import Ajv from 'ajv'
+import { readFileSync } from 'fs'
 
 /**
  * Validate JSON Files.
@@ -10,7 +10,7 @@ const { readFileSync } = require('fs')
  * @param {boolean} strict Whether to strictly validate the JSON.
  * @returns {Promise<string>} Resolves with 'done!' after the wait is over.
  */
-async function validateFiles(files, schema, strict) {
+export async function validateFiles(files, schema, strict) {
   const ajv = new Ajv({ strict, loadSchema })
   const validate = await ajv.compileAsync(schema || true)
 
@@ -42,5 +42,3 @@ async function loadSchema(uri) {
 
   return res.body
 }
-
-module.exports = { validateFiles }

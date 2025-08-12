@@ -1,13 +1,13 @@
-const core = require('@actions/core')
-const { glob } = require('glob')
-const { readSchema } = require('./schema')
-const { validateFiles } = require('./validate')
+import * as core from '@actions/core'
+import { glob } from 'glob'
+import { readSchema } from './schema'
+import { validateFiles } from './validate'
 
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
-async function run() {
+export async function run() {
   try {
     const filesInput = core.getInput('files', { required: true })
     const schemaInput = core.getInput('schema', { required: false })
@@ -37,8 +37,4 @@ async function run() {
     // Fail the workflow run if an error occurs
     core.setFailed(error.message)
   }
-}
-
-module.exports = {
-  run
 }

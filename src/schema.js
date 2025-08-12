@@ -1,6 +1,6 @@
-const fs = require('fs').promises
+import { promises as fs } from 'fs'
 
-const isUrl = string => {
+const isUrl = (string) => {
   try {
     new URL(string)
     return true
@@ -15,7 +15,7 @@ const isUrl = string => {
  * @param {string} schemaInput The schema input.
  * @returns {Promise<string>} Resolves with the schema content.
  */
-async function readSchema(schemaInput) {
+export async function readSchema(schemaInput) {
   let schema
   if (isUrl(schemaInput)) {
     schema = await downloadSchema(schemaInput)
@@ -46,5 +46,3 @@ async function downloadSchema(schemaInput) {
 
   return jsonSchema
 }
-
-module.exports = { readSchema }
