@@ -1,4 +1,9 @@
-name: Continuous Integration
+# This workflow will lint the entire codebase using the
+# `super-linter/super-linter` action.
+#
+# For more information, see the super-linter repository:
+#     https://github.com/super-linter/super-linter
+name: CI
 
 on:
   pull_request:
@@ -10,22 +15,26 @@ on:
 
 permissions:
   contents: read
+  packages: read
+  statuses: write
 
 jobs:
-  test-javascript:
-    name: JavaScript Tests
+  lint:
+    name: Lint Codebase
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         id: setup-node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version-file: .nvmrc
+          node-version-file: .node-version
           cache: npm
 
       - name: Install Dependencies
@@ -51,14 +60,14 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Test Local Action
         id: test-action
         uses: ./
         with:
-          files: '__tests__/fixtures/valid.json'
-          schema: '__tests__/fixtures/schema.json'
+          files: '__fixtures__/valid.json'
+          schema: '__fixtures__/schema.json'
 
       - name: Print Output
         id: output
@@ -71,15 +80,15 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Test Local Action
         id: test-action
         continue-on-error: true
         uses: ./
         with:
-          files: '__tests__/fixtures/invalid.json'
-          schema: '__tests__/fixtures/schema.json'
+          files: '__fixtures__/invalid.json'
+          schema: '__fixtures__/schema.json'
 
       - name: Check for failure
         id: check-failure
@@ -87,7 +96,6 @@ jobs:
         run: |
           echo "Action failed as expected"
           exit 0
-
       - name: Print Output
         id: output
         run: echo "${{ steps.test-action.outputs.valid }}"

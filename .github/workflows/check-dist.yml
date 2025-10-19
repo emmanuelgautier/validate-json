@@ -1,4 +1,4 @@
-# In JavaScript actions, `dist/` is a special directory. When you reference
+# In TypeScript actions, `dist/` is a special directory. When you reference
 # an action with the `uses:` property, `dist/index.js` is the code that will be
 # run. For this project, the `dist/index.js` file is transpiled from other
 # source files. This workflow ensures the `dist/` directory contains the
@@ -28,13 +28,13 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
         id: setup-node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version-file: .nvmrc
+          node-version-file: .node-version
           cache: npm
 
       - name: Install Dependencies
