@@ -26,7 +26,8 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v5
 
       - name: Validate JSON
         uses: emmanuelgautier/validate-json@v2
