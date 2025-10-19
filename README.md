@@ -50,6 +50,18 @@ jobs:
 | `valid`  | Whether the JSON file(s) are valid.  |
 | `errors` | The validation errors for each file. |
 
+## Schema Input Behavior
+
+The schema input is optional and can be omitted during the validation process.
+If the `schema` input is not provided, the action will perform a basic
+validation to ensure that the JSON files have the correct format. This basic
+validation checks for common JSON syntax errors and structure.
+
+However, it's **highly recommended to provide a custom JSON Schema** using the
+`schema` input. A custom JSON Schema allows you to define specific validation
+rules tailored to your JSON files. By using a custom JSON Schema, you can ensure
+that your JSON files adhere to your desired structure and requirements.
+
 ## About
 
 This action uses [ajv](https://ajv.js.org/) to validate JSON files.
