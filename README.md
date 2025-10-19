@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Validate JSON
-        uses: emmanuelgautier/validate-json@v1
+        uses: emmanuelgautier/validate-json@v2
         with:
           files: dir/*.json
           schema: schema.json
