@@ -1,10 +1,10 @@
 import { promises as fs } from 'fs'
 
-const isUrl = (string) => {
+const isUrl = (url: string) => {
   try {
-    new URL(string)
+    new URL(url)
     return true
-  } catch (_) {
+  } catch {
     return false
   }
 }
@@ -15,7 +15,7 @@ const isUrl = (string) => {
  * @param {string} schemaInput The schema input.
  * @returns {Promise<string>} Resolves with the schema content.
  */
-export async function readSchema(schemaInput) {
+export async function readSchema(schemaInput: string) {
   let schema
   if (isUrl(schemaInput)) {
     schema = await downloadSchema(schemaInput)
@@ -36,7 +36,7 @@ export async function readSchema(schemaInput) {
  * @param {string} schemaInput The schema input URL.
  * @returns
  */
-async function downloadSchema(schemaInput) {
+async function downloadSchema(schemaInput: string) {
   // TODO: Test if the schema exists in the cache.
 
   const response = await fetch(schemaInput)

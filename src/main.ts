@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import { glob } from 'glob'
-import { readSchema } from './schema'
-import { validateFiles } from './validate'
+import { readSchema } from './schema.js'
+import { validateFiles } from './validate.js'
 
 /**
  * The main function for the action.
@@ -35,6 +35,6 @@ export async function run() {
     core.setOutput('valid', 'true')
   } catch (error) {
     // Fail the workflow run if an error occurs
-    core.setFailed(error.message)
+    core.setFailed((error as Error).message)
   }
 }

@@ -1,7 +1,7 @@
 // See: https://jestjs.io/docs/configuration
 
-/** @type {import('jest').Config} */
-const jestConfig = {
+/** @type {import('ts-jest').JestConfigWithTsJest} **/
+export default {
   clearMocks: true,
   collectCoverage: true,
   collectCoverageFrom: ['./src/**'],
@@ -19,12 +19,22 @@ const jestConfig = {
   //     statements: 100
   //   }
   // },
-  moduleFileExtensions: ['js'],
+  extensionsToTreatAsEsm: ['.ts'],
+  moduleFileExtensions: ['ts', 'js'],
+  preset: 'ts-jest',
   reporters: ['default'],
+  resolver: 'ts-jest-resolver',
   testEnvironment: 'node',
-  testMatch: ['**/*.test.js'],
+  testMatch: ['**/*.test.ts'],
   testPathIgnorePatterns: ['/dist/', '/node_modules/'],
+  transform: {
+    '^.+\\.ts$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.eslint.json',
+        useESM: true
+      }
+    ]
+  },
   verbose: true
 }
-
-export default jestConfig
