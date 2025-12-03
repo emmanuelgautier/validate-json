@@ -35192,7 +35192,9 @@ async function readSchema(schemaInput) {
         schema = await downloadSchema(schemaInput);
     }
     else {
+        coreExports.debug(`Reading schema file ${schemaInput}`);
         schema = await promises.readFile(schemaInput, 'utf-8');
+        coreExports.debug(`Read schema file ${schemaInput}`);
     }
     if (!schema) {
         throw new Error(`Schema not found: ${schemaInput}`);
@@ -35207,8 +35209,15 @@ async function readSchema(schemaInput) {
  */
 async function downloadSchema(schemaInput) {
     // TODO: Test if the schema exists in the cache.
+    coreExports.debug(`Fetching schema ${schemaInput}`);
     const response = await fetch(schemaInput);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch schema: ${response.statusText}`);
+    }
+    coreExports.debug(`Response status for schema ${schemaInput}: ${response.status}`);
     const jsonSchema = await response.text();
+    coreExports.debug(`JSON schema for schema ${schemaInput}: ${jsonSchema}`);
+    coreExports.debug(`Fetched schema ${schemaInput}`);
     // TODO: Cache the schema
     return jsonSchema;
 }
@@ -42486,13 +42495,16 @@ async function validateFiles(files, schema, strict) {
     return filesErrors;
 }
 async function loadSchema(uri) {
+    coreExports.debug(`Fetching schema ${uri}`);
     const res = await fetch(uri);
     if (!res.ok) {
         throw new Error(`Failed to fetch schema ${uri}: ${res.statusText}`);
     }
+    coreExports.debug(`Response status for schema ${uri}: ${res.status}`);
     if (!res.body) {
         throw new Error(`No body in response for schema ${uri}`);
     }
+    coreExports.debug(`Fetched schema ${uri}`);
     return res.body;
 }
 

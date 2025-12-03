@@ -41,14 +41,19 @@ export async function validateFiles(
 }
 
 async function loadSchema(uri: string): Promise<AnySchemaObject> {
+  core.debug(`Fetching schema ${uri}`)
+
   const res = await fetch(uri)
   if (!res.ok) {
     throw new Error(`Failed to fetch schema ${uri}: ${res.statusText}`)
   }
+  core.debug(`Response status for schema ${uri}: ${res.status}`)
 
   if (!res.body) {
     throw new Error(`No body in response for schema ${uri}`)
   }
+
+  core.debug(`Fetched schema ${uri}`)
 
   return res.body
 }
