@@ -36781,13 +36781,13 @@ const addFormats = addFormatsPlugin;
  * @param {string[]} files JSON to validate.
  * @param {object} schema JSON schema to validate against.
  * @param {boolean} strict Whether to strictly validate the JSON.
- * @returns {Promise<string[]>} Resolves with the validation errors.
+ * @returns {Promise<FileResult[]>} Resolves with per-file validation results.
  */
 async function validateFiles(files, schema, strict) {
     const ajv = new ajvExports.Ajv({ strict, loadSchema });
     addFormats(ajv);
     const validate = schema ? await ajv.compileAsync(schema) : ajv.compile(true);
-    let filesErrors = [];
+    const results = [];
     for (const file of files) {
         try {
             const data = JSON.parse(readFileSync(file, 'utf-8'));
@@ -36799,12 +36799,13 @@ async function validateFiles(files, schema, strict) {
             if (!isValid) {
                 throw new Error(ajv.errorsText(validate.errors));
             }
+            results.push({ file, errors: [] });
         }
         catch (error) {
-            filesErrors = filesErrors.concat(`${file}: ${error.message}`);
+            results.push({ file, errors: [error.message] });
         }
     }
-    return filesErrors;
+    return results;
 }
 async function loadSchema(uri) {
     debug(`Fetching schema ${uri}`);
@@ -36833,15 +36834,43 @@ async function run() {
         const files = Ze.sync(filesInput);
         debug(`files: ${files}`);
         const schema = schemaInput ? await readSchema(schemaInput) : null;
-        const errors = await validateFiles(files, schema, strictInput);
-        if (errors.length > 0) {
+        const results = await validateFiles(files, schema, strictInput);
+        const multipleFiles = files.length > 1;
+        // Per-file output (only when several files matched)
+        if (multipleFiles) {
+            for (const result of results) {
+                if (result.errors.length === 0) {
+                    info(`${result.file}: valid`);
+                }
+                else {
+                    for (const err of result.errors) {
+                        error(`${result.file}: ${err}`);
+                    }
+                }
+            }
+        }
+        const allErrors = results.flatMap((r) => r.errors.map((err) => `${r.file}: ${err}`));
+        if (allErrors.length > 0) {
+            // Summary
+            if (multipleFiles) {
+                const validCount = results.filter((r) => r.errors.length === 0).length;
+                const invalidCount = results.length - validCount;
+                info(`Summary: ${validCount} file(s) valid, ${invalidCount} file(s) invalid out of ${results.length} file(s) checked.`);
+            }
             setOutput('valid', 'false');
-            setOutput('errors', errors);
+            setOutput('errors', allErrors);
             setFailed('Validation failed!');
-            for (const error$1 of errors) {
-                error(error$1);
+            // Single-file: emit the error message (multi-file already logged above)
+            if (!multipleFiles) {
+                for (const err of allErrors) {
+                    error(err);
+                }
             }
             return;
+        }
+        // Summary for successful multi-file run
+        if (multipleFiles) {
+            info(`Summary: ${results.length} file(s) checked, all valid.`);
         }
         info('Validation successful!');
         setOutput('valid', 'true');

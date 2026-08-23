@@ -20,13 +20,15 @@ describe('validateFiles', () => {
       )
     )
 
-    const errors = await validateFiles(
+    const results = await validateFiles(
       ['__fixtures__/formats-valid.json'],
       schema,
       false
     )
 
-    expect(errors).toEqual([])
+    expect(results).toEqual([
+      { file: '__fixtures__/formats-valid.json', errors: [] }
+    ])
   })
 
   it('reports errors for a file that violates every ajv-formats format', async () => {
@@ -36,14 +38,16 @@ describe('validateFiles', () => {
       )
     )
 
-    const errors = await validateFiles(
+    const results = await validateFiles(
       ['__fixtures__/formats-invalid.json'],
       schema,
       false
     )
 
-    expect(errors).toHaveLength(1)
-    expect(errors[0]).toContain('__fixtures__/formats-invalid.json')
+    expect(results).toHaveLength(1)
+    expect(results[0].file).toBe('__fixtures__/formats-invalid.json')
+    expect(results[0].errors).toHaveLength(1)
+    expect(results[0].errors[0]).toBeTruthy()
   })
 
   it.each([
@@ -73,7 +77,7 @@ describe('validateFiles', () => {
     const file = `__fixtures__/tmp-${format}.json`
     writeFileSync(file, JSON.stringify({ value }))
 
-    const errors = await validateFiles(
+    const results = await validateFiles(
       [file],
       {
         type: 'object',
@@ -85,7 +89,7 @@ describe('validateFiles', () => {
 
     unlinkSync(file)
 
-    expect(errors).toEqual([])
+    expect(results).toEqual([{ file, errors: [] }])
   })
 
   it.each([
@@ -98,7 +102,7 @@ describe('validateFiles', () => {
     const file = `__fixtures__/tmp-${format}.json`
     writeFileSync(file, JSON.stringify({ value }))
 
-    const errors = await validateFiles(
+    const results = await validateFiles(
       [file],
       {
         type: 'object',
@@ -115,6 +119,6 @@ describe('validateFiles', () => {
 
     unlinkSync(file)
 
-    expect(errors).toEqual([])
+    expect(results).toEqual([{ file, errors: [] }])
   })
 })
