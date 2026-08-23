@@ -107,4 +107,82 @@ describe('main.ts', () => {
       'Input required and not supplied: files'
     )
   })
+
+  it('logs per-file valid messages and summary when multiple files all pass', async () => {
+    core.getInput.mockImplementation((name) => {
+      switch (name) {
+        case 'files':
+          return '__fixtures__/valid{,2}.json'
+        case 'schema':
+          return '__fixtures__/schema.json'
+        default:
+          return ''
+      }
+    })
+
+    await run()
+
+    // Each matched file should produce an individual "valid" info line
+    const infoCalls = core.info.mock.calls.map((c) => c[0])
+    expect(
+      infoCalls.some((msg) =>
+        (msg as string).includes('__fixtures__/valid.json: valid')
+      )
+    ).toBe(true)
+    expect(
+      infoCalls.some((msg) =>
+        (msg as string).includes('__fixtures__/valid2.json: valid')
+      )
+    ).toBe(true)
+    // Summary line should be present
+    expect(
+      infoCalls.some((msg) => (msg as string).startsWith('Summary:'))
+    ).toBe(true)
+    expect(
+      infoCalls.some((msg) =>
+        (msg as string).includes('2 file(s) checked, all valid')
+      )
+    ).toBe(true)
+    // Global success line
+    expect(infoCalls.some((msg) => msg === 'Validation successful!')).toBe(true)
+    expect(core.setOutput).toHaveBeenNthCalledWith(1, 'valid', 'true')
+  })
+
+  it('logs per-file messages and summary when multiple files and some are invalid', async () => {
+    core.getInput.mockImplementation((name) => {
+      switch (name) {
+        case 'files':
+          // matches both valid.json and invalid.json
+          return '__fixtures__/{valid,invalid}.json'
+        case 'schema':
+          return '__fixtures__/schema.json'
+        default:
+          return ''
+      }
+    })
+
+    await run()
+
+    // The invalid file should have been logged as an error
+    expect(core.error).toHaveBeenCalledWith(
+      expect.stringContaining(`__fixtures__/invalid.json`)
+    )
+    // The valid file should have produced a "valid" info line
+    const infoCalls = core.info.mock.calls.map((c) => c[0])
+    expect(
+      infoCalls.some((msg) =>
+        (msg as string).includes('__fixtures__/valid.json: valid')
+      )
+    ).toBe(true)
+    // Summary line should report 1 valid, 1 invalid
+    expect(
+      infoCalls.some(
+        (msg) =>
+          (msg as string).includes('1 file(s) valid') &&
+          (msg as string).includes('1 file(s) invalid')
+      )
+    ).toBe(true)
+    expect(core.setOutput).toHaveBeenNthCalledWith(1, 'valid', 'false')
+    expect(core.setFailed).toHaveBeenNthCalledWith(1, 'Validation failed!')
+  })
 })

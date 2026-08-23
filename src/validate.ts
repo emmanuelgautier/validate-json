@@ -7,24 +7,29 @@ import { readFileSync } from 'fs'
 // module resolution (https://github.com/ajv-validator/ajv-formats/issues/153).
 const addFormats = addFormatsPlugin as unknown as Plugin<FormatsPluginOptions>
 
+export interface FileResult {
+  file: string
+  errors: string[]
+}
+
 /**
  * Validate JSON Files.
  *
  * @param {string[]} files JSON to validate.
  * @param {object} schema JSON schema to validate against.
  * @param {boolean} strict Whether to strictly validate the JSON.
- * @returns {Promise<string[]>} Resolves with the validation errors.
+ * @returns {Promise<FileResult[]>} Resolves with per-file validation results.
  */
 export async function validateFiles(
   files: string[],
   schema: Record<string, unknown> | null,
   strict: boolean
-): Promise<string[]> {
+): Promise<FileResult[]> {
   const ajv = new Ajv({ strict, loadSchema })
   addFormats(ajv)
   const validate = schema ? await ajv.compileAsync(schema) : ajv.compile(true)
 
-  let filesErrors: string[] = []
+  const results: FileResult[] = []
   for (const file of files) {
     try {
       const data = JSON.parse(readFileSync(file, 'utf-8'))
@@ -38,12 +43,14 @@ export async function validateFiles(
       if (!isValid) {
         throw new Error(ajv.errorsText(validate.errors))
       }
+
+      results.push({ file, errors: [] })
     } catch (error) {
-      filesErrors = filesErrors.concat(`${file}: ${(error as Error).message}`)
+      results.push({ file, errors: [(error as Error).message] })
     }
   }
 
-  return filesErrors
+  return results
 }
 
 async function loadSchema(uri: string): Promise<AnySchemaObject> {

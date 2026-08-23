@@ -19,16 +19,53 @@ export async function run() {
     core.debug(`files: ${files}`)
 
     const schema = schemaInput ? await readSchema(schemaInput) : null
-    const errors = await validateFiles(files, schema, strictInput)
-    if (errors.length > 0) {
+    const results = await validateFiles(files, schema, strictInput)
+
+    const multipleFiles = files.length > 1
+
+    // Per-file output (only when several files matched)
+    if (multipleFiles) {
+      for (const result of results) {
+        if (result.errors.length === 0) {
+          core.info(`${result.file}: valid`)
+        } else {
+          for (const err of result.errors) {
+            core.error(`${result.file}: ${err}`)
+          }
+        }
+      }
+    }
+
+    const allErrors = results.flatMap((r) =>
+      r.errors.map((err) => `${r.file}: ${err}`)
+    )
+
+    if (allErrors.length > 0) {
+      // Summary
+      if (multipleFiles) {
+        const validCount = results.filter((r) => r.errors.length === 0).length
+        const invalidCount = results.length - validCount
+        core.info(
+          `Summary: ${validCount} file(s) valid, ${invalidCount} file(s) invalid out of ${results.length} file(s) checked.`
+        )
+      }
+
       core.setOutput('valid', 'false')
-      core.setOutput('errors', errors)
+      core.setOutput('errors', allErrors)
       core.setFailed('Validation failed!')
 
-      for (const error of errors) {
-        core.error(error)
+      // Single-file: emit the error message (multi-file already logged above)
+      if (!multipleFiles) {
+        for (const err of allErrors) {
+          core.error(err)
+        }
       }
       return
+    }
+
+    // Summary for successful multi-file run
+    if (multipleFiles) {
+      core.info(`Summary: ${results.length} file(s) checked, all valid.`)
     }
 
     core.info('Validation successful!')
