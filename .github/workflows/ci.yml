@@ -73,6 +73,26 @@ jobs:
         id: output
         run: echo "${{ steps.test-action.outputs.valid }}"
 
+  test-formats-action:
+    name: GitHub Actions Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v7
+
+      - name: Test Local Action
+        id: test-action
+        uses: ./
+        with:
+          files: '__fixtures__/formats-valid.json'
+          schema: '__fixtures__/formats-schema.json'
+
+      - name: Print Output
+        id: output
+        run: echo "${{ steps.test-action.outputs.valid }}"
+
   test-errors-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest

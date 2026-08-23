@@ -65,7 +65,10 @@ that your JSON files adhere to your desired structure and requirements.
 
 ## About
 
-This action uses [ajv](https://ajv.js.org/) to validate JSON files.
+This action uses [ajv](https://ajv.js.org/) to validate JSON files, with
+[ajv-formats](https://ajv.js.org/packages/ajv-formats.html) enabled so schemas
+can use the `format` keyword (`date`, `date-time`, `email`, `uuid`, `ipv4`,
+`ipv6`, etc.).
 
 ## License
 

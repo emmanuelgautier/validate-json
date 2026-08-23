@@ -1,6 +1,11 @@
 import * as core from '@actions/core'
-import { Ajv, type AnySchemaObject } from 'ajv'
+import { Ajv, type AnySchemaObject, type Plugin } from 'ajv'
+import addFormatsPlugin, { type FormatsPluginOptions } from 'ajv-formats'
 import { readFileSync } from 'fs'
+
+// The ajv-formats default export loses its call signature under NodeNext
+// module resolution (https://github.com/ajv-validator/ajv-formats/issues/153).
+const addFormats = addFormatsPlugin as unknown as Plugin<FormatsPluginOptions>
 
 /**
  * Validate JSON Files.
@@ -16,6 +21,7 @@ export async function validateFiles(
   strict: boolean
 ): Promise<string[]> {
   const ajv = new Ajv({ strict, loadSchema })
+  addFormats(ajv)
   const validate = schema ? await ajv.compileAsync(schema) : ajv.compile(true)
 
   let filesErrors: string[] = []
