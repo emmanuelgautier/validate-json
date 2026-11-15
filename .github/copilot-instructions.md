@@ -1,13 +1,13 @@
 # Copilot Instructions
 
-This GitHub Action is written in JavaScript and transpiled to a single file.
-Both the JavaScript sources and the **generated** JavaScript code are contained
-in this repository. The JavaScript sources are contained in the `src` directory
-and the code invoked by GitHub Actions is contained in the `dist` directory. A
-GitHub Actions workflow checks that the JavaScript code in `dist` is up-to-date.
-Therefore, you should not review any changes to the contents of the `dist`
-folder and it is expected that the JavaScript code in `dist` closely mirrors the
-code it is generated from.
+This GitHub Action is written in TypeScript and transpiled to JavaScript. Both
+the TypeScript sources and the **generated** JavaScript code are contained in
+this repository. The TypeScript sources are contained in the `src` directory and
+the JavaScript code is contained in the `dist` directory. A GitHub Actions
+workflow checks that the JavaScript code in `dist` is up-to-date. Therefore, you
+should not review any changes to the contents of the `dist` folder and it is
+expected that the JavaScript code in `dist` closely mirrors the TypeScript code
+it is generated from.
 
 ## Repository Structure
 
@@ -21,7 +21,7 @@ code it is generated from.
 | `.vscode/`           | Visual Studio Code Configuration                         |
 | `badges/`            | Badges for readme                                        |
 | `dist/`              | Generated JavaScript Code                                |
-| `src/`               | JavaScript Source Code                                   |
+| `src/`               | TypeScript Source Code                                   |
 | `.env.example`       | Environment Variables Example for `@github/local-action` |
 | `.licensed.yml`      | Licensed Configuration                                   |
 | `.markdown-lint.yml` | Markdown Linter Configuration                            |
@@ -35,7 +35,8 @@ code it is generated from.
 | `LICENSE`            | License File                                             |
 | `package.json`       | NPM Package Configuration                                |
 | `README.md`          | Project Documentation                                    |
-| `rollup.config.js`   | Rollup Bundler Configuration                             |
+| `rollup.config.ts`   | Rollup Bundler Configuration                             |
+| `tsconfig.json`      | TypeScript Configuration                                 |
 
 ## Environment Setup
 
@@ -59,7 +60,7 @@ Unit tests should exist in the `__tests__` directory. They are powered by
 ## Bundling
 
 Any time files in the `src` directory are changed, you should run the following
-command to bundle the JavaScript code into the `dist` directory:
+command to bundle the TypeScript code into JavaScript:
 
 ```bash
 npm run bundle
@@ -67,13 +68,15 @@ npm run bundle
 
 ## General Coding Guidelines
 
-- Follow standard JavaScript coding conventions and best practices
+- Follow standard TypeScript and JavaScript coding conventions and best
+  practices
 - Changes should maintain consistency with existing patterns and style
 - Document changes clearly and thoroughly, including updates to existing
   comments when appropriate
 - Do not include basic, unnecessary comments that simply restate what the code
   is doing (focus on explaining _why_, not _what_)
 - Use consistent error handling patterns throughout the codebase
+- Use TypeScript's type system to ensure type safety and clarity
 - Keep functions focused and manageable
 - Use descriptive variable and function names that clearly convey their purpose
 - Use JSDoc comments to document functions, classes, and complex logic
